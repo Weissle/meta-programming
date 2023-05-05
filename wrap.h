@@ -1,93 +1,81 @@
 #pragma once
-#include "logic.h"
-#include "meta.h"
+#include "./meta/meta.h"
+#include "graph.h"
 #include <type_traits>
 
-template <typename NodeClass_, typename NXT_>
-class Node
-{
-public:
-    using NodeClass = NodeClass_;
-    using NXT = NXT_;
-};
-
-template <typename WantedClass, typename NodeList>
-class GetNode;
-
-template <typename WantedClass>
-class GetNode<WantedClass, EmptyClassList>
-{
-public:
-    using Node = void;
-};
-
-template <typename WantedClass, typename NodeList>
-class GetNode
-{
-    using CurNode = typename NodeList::THX;
-    using CurClass = typename CurNode::NodeClass;
-    using CurNext = typename CurNode::NXT;
-
-public:
-    static constexpr bool is_wanted = std::is_same_v<CurClass, WantedClass>;
-    using Node = std::conditional_t<
-        is_wanted, CurNode,
-        typename GetNode<WantedClass, typename NodeList::RES>::Node>;
-};
-
-template <typename Seq>
-class Run
-{
-public:
-    void run()
-    {
-        Run<typename Seq::RST> r;
-        r.run();
-        using T = typename Seq::THX;
-        T::run();
-    }
-};
-
-template <>
-class Run<EmptyClassList>
-{
-public:
-    void run() {}
-};
-
-template <typename TotalNodeList, typename RestNodeList = TotalNodeList,
+template <template <typename, typename> typename InsertF,
+          typename TotalNodeList, typename RestNodeList = TotalNodeList,
           typename NextNodeList = EmptyClassList,
           typename ClassSeq_ = EmptyClassList>
-class DFS;
+class Traverser;
 
-template <typename TotalNodeList, typename ClassSeq_>
-class DFS<TotalNodeList, EmptyClassList, EmptyClassList, ClassSeq_>
+template <template <typename, typename> typename InsertF,
+          typename TotalNodeList, typename ClassSeq_>
+class Traverser<InsertF, TotalNodeList, EmptyClassList, EmptyClassList,
+                ClassSeq_>
 {
 public:
     using FinnalClassSeq = ClassSeq_;
 };
 
-template <typename TotalNodeList, typename RestNodeList, typename NextNodeList,
-          typename CurClassSeq_>
-class DFS
+template <template <typename, typename> typename InsertF,
+          typename TotalNodeList, typename RestNodeList, typename CurClassSeq_>
+class Traverser<InsertF, TotalNodeList, RestNodeList, EmptyClassList,
+                CurClassSeq_>
 {
     using CurClassSeq = CurClassSeq_;
     using CurNode = typename RestNodeList::THX;
     using CurClass = typename CurNode::NodeClass;
     using NewRestNodeList = typename RestNodeList::RST;
+    using NewClassSeq = std::conditional_t<
+        ClassListHasV<CurClassSeq, CurClass>, CurClassSeq,
+        typename ClassListInsertTail<CurClassSeq, CurClass>::type>;
 
 public:
-    using FinnalClassSeq = std::conditional_t<
-        InClassList_v<CurClassSeq, CurClass>, CurClassSeq,
-        std::conditional_t<
-            std::is_same_v<CurClassSeq_, EmptyClassList>,
-            typename DFS<TotalNodeList, NewRestNodeList,
-                         ClassList<CurClass>>::FinnalClassSeq,
-            typename DFS<TotalNodeList, NewRestNodeList,
-                         ClassList<CurClass, CurClassSeq>>::FinnalClassSeq>>;
+    using FinnalClassSeq =
+        typename Traverser<InsertF, TotalNodeList, NewRestNodeList,
+                           typename CurNode::NXT, NewClassSeq>::FinnalClassSeq;
     void run()
     {
         Run<FinnalClassSeq> r;
         r.run();
     }
+    void run(std::string& s)
+    {
+        Run<FinnalClassSeq> r;
+        r.run(s);
+    }
 };
+
+template <template <typename, typename> typename InsertF,
+          typename TotalNodeList, typename RestNodeList, typename NextNodeList,
+          typename CurClassSeq_>
+class Traverser
+{
+    using CurClassSeq = CurClassSeq_;
+    using CurClass = typename ClassListPopHead<NextNodeList>::head;
+    using NextNodeList1 = typename ClassListPopHead<NextNodeList>::type;
+    using CurNode = typename GetNode<CurClass, TotalNodeList>::Node;
+
+    static constexpr bool need_append = !ClassListHasV<CurClassSeq, CurClass>;
+    using NewClassSeq = std::conditional_t<
+        need_append, typename ClassListInsertTail<CurClassSeq, CurClass>::type,
+        CurClassSeq>;
+    using NewNextNodeList = std::conditional_t<
+        need_append,
+        typename InsertF<NextNodeList1, typename CurNode::NXT>::type,
+        NextNodeList1>;
+
+public:
+    using FinnalClassSeq =
+        typename Traverser<InsertF, TotalNodeList, RestNodeList,
+                           NewNextNodeList, NewClassSeq>::FinnalClassSeq;
+};
+
+template <typename TotalNodeList>
+using BFS = Traverser<ClassListMultiInsertTail, TotalNodeList, TotalNodeList,
+                      EmptyClassList, EmptyClassList>;
+
+template <typename TotalNodeList>
+using DFS = Traverser<ClassListMultiInsertHead, TotalNodeList, TotalNodeList,
+                      EmptyClassList, EmptyClassList>;

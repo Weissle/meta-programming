@@ -1,49 +1,92 @@
+#include "graph.h"
+#include "logic.h"
+#include "meta/meta.h"
+#include "wrap.h"
+#include <assert.h>
 #include <iostream>
-// 定义一个空类模板作为递归终止条件
-template <typename... T>
-class ClassList
-{
-};
 
-// 定义一个非空类模板，可以接收任意数量的模板参数
-template <typename T, typename... Rest>
-class ClassList<T, Rest...>
-{
-public:
-    // 遍历每个类的方法
-    void iterate()
-    {
-        std::cout << typeid(T).name() << std::endl; // 输出当前类的类型信息
-        // 递归调用遍历方法，继续遍历后面的类
-        ClassList<Rest...>().iterate();
-    }
-};
-
-// 特化一个版本，避免ClassList<ClassList<...>>的情况
-template <typename T>
-class ClassList<T>
-{
-public:
-    void iterate() { std::cout << typeid(T).name() << std::endl; }
-};
-
-// 定义一些类
-class A
-{
-};
-class B
-{
-};
-class C
-{
-};
 int main(int argc, char* argv[])
 {
-    // 定义一个ClassList对象
-    ClassList<A, B, ClassList<C, A>> myList;
+    std::string s;
 
-    // 遍历所有类
-    myList.iterate();
+    // test1
+    s.clear();
+    using CL1 = ClassList<LogicA, LogicB, LogicC, LogicD, LogicE>;
+    Run<CL1>::run(s);
+    // std::cout << s << std::endl;
+    assert(s == "LogicA;LogicB;LogicC;LogicD;LogicE;");
 
+    // test2
+    s.clear();
+    using CL2 = typename ClassListInsertTail<CL1, LogicF>::type;
+    Run<CL2>::run(s);
+    // std::cout << s << std::endl;
+    assert(s == "LogicA;LogicB;LogicC;LogicD;LogicE;LogicF;");
+
+    // test3
+    s.clear();
+    using CL3W = ClassListPopTail<CL1>;
+    static_assert(std::is_same_v<LogicE, typename CL3W::tail>);
+    Run<CL3W::type>::run(s);
+    assert(s == "LogicA;LogicB;LogicC;LogicD;");
+
+    // test4
+    s.clear();
+    using CL4W = ClassListPopHead<CL1>;
+    static_assert(std::is_same_v<LogicA, typename CL4W::head>);
+    Run<CL4W::type>::run(s);
+    assert(s == "LogicB;LogicC;LogicD;LogicE;");
+
+    // test4
+    s.clear();
+    using CL5 = ClassListInsertHead<CL4W::type, LogicF>::type;
+    Run<CL5>::run(s);
+    assert(s == "LogicF;LogicB;LogicC;LogicD;LogicE;");
+
+    // test5
+    static_assert(ClassListHasV<CL1, LogicB>);
+    static_assert(!ClassListHasV<CL1, LogicF>);
+
+    // test6
+    using CL6_1 = ClassList<LogicA, LogicB, LogicF>;
+    using CL6_2 = ClassList<LogicD, LogicF, LogicC>;
+    using CL6 = ClassListMultiInsertTail<CL6_1, CL6_2>::type;
+    s.clear();
+    Run<CL6_1>::run(s);
+    assert(s == "LogicA;LogicB;LogicF;");
+    s.clear();
+    Run<CL6_2>::run(s);
+    assert(s == "LogicD;LogicF;LogicC;");
+    s.clear();
+    Run<CL6>::run(s);
+    assert(s == "LogicA;LogicB;LogicF;LogicD;LogicF;LogicC;");
+
+    // test7
+    using CL7_1 = ClassList<LogicA, LogicB, LogicF>;
+    using CL7_2 = ClassList<LogicD, LogicF, LogicC>;
+    using CL7 = ClassListMultiInsertHead<CL7_1, CL7_2>::type;
+    s.clear();
+    Run<CL7_1>::run(s);
+    assert(s == "LogicA;LogicB;LogicF;");
+    s.clear();
+    Run<CL7_2>::run(s);
+    assert(s == "LogicD;LogicF;LogicC;");
+    s.clear();
+    Run<CL7>::run(s);
+    assert(s == "LogicD;LogicF;LogicC;LogicA;LogicB;LogicF;");
+
+    // test8
+    s.clear();
+    BFS<NodeList> bfs;
+    bfs.run(s);
+    assert(s == "LogicA;LogicE;LogicC;LogicD;LogicB;LogicF;");
+
+    // test9
+    s.clear();
+    DFS<NodeList> dfs;
+    dfs.run(s);
+    assert(s == "LogicA;LogicE;LogicD;LogicC;LogicB;LogicF;");
+
+    std::cout << "All tests is passed.\n";
     return 0;
 }

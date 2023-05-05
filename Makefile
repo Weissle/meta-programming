@@ -1,5 +1,11 @@
 all: build run
+
 build:
-	g++ --std=c++17 main.cpp -o a.out
+	g++ --std=c++17 -I. main.cpp -o ./build/a.out
 run: build
-	./a.out
+	./build/a.out
+
+build_test:
+	g++ --std=c++17 -I. test.cpp -o ./build/test.out
+test: build_test
+	./build/test.out

@@ -1,5 +1,8 @@
 #pragma once
+// Assuming all logic code is place in here.
+#include "meta/meta.h"
 #include <iostream>
+#include <string>
 
 #define DEFINE_CLASS(CLASS_NAME)                                               \
     class CLASS_NAME                                                           \
@@ -11,6 +14,11 @@
         static void run()                                                      \
         {                                                                      \
             std::cout << #CLASS_NAME << " is running" << std::endl;            \
+        }                                                                      \
+        static void run(std::string& s)                                        \
+        {                                                                      \
+            s += #CLASS_NAME;                                                  \
+            s += ";";                                                          \
         }                                                                      \
     }
 
