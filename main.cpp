@@ -3,10 +3,9 @@
 
 int main(int argc, char* argv[])
 {
-    DFS<NodeList, NodeList, EmptyClassList> dfs;
+    DFS<NodeList> dfs;
     dfs.run();
-    // auto node = graph.get_node<LogicE, typename G::NodeList>();
-    // decltype(node)::NodeClass::run();
-    // graph.dfs();
+    BFS<NodeList> bfs;
+    bfs.run();
     return 0;
 }

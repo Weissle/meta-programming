@@ -79,13 +79,13 @@ int main(int argc, char* argv[])
     s.clear();
     BFS<NodeList> bfs;
     bfs.run(s);
-    assert(s == "LogicA;LogicE;LogicC;LogicD;LogicB;LogicF;");
+    assert(s == "LogicA;LogicE;LogicC;LogicD;LogicB;LogicF;LogicH;LogicG;");
 
     // test9
     s.clear();
     DFS<NodeList> dfs;
     dfs.run(s);
-    assert(s == "LogicA;LogicE;LogicD;LogicC;LogicB;LogicF;");
+    assert(s == "LogicA;LogicE;LogicD;LogicC;LogicB;LogicF;LogicH;LogicG;");
 
     std::cout << "All tests is passed.\n";
     return 0;

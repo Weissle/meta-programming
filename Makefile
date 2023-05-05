@@ -1,11 +1,15 @@
-all: build run
+.PHONY: all test clean
 
+all: build run
 build:
-	g++ --std=c++17 -I. main.cpp -o ./build/a.out
+	g++ --std=c++17 -I. main.cpp -o ./bin/a.out
 run: build
-	./build/a.out
+	./bin/a.out
 
 build_test:
-	g++ --std=c++17 -I. test.cpp -o ./build/test.out
+	g++ --std=c++17 -I. test.cpp -o ./bin/test.out
 test: build_test
-	./build/test.out
+	./bin/test.out
+
+clean:
+	rm ./bin/*
