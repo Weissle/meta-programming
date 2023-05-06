@@ -1,6 +1,6 @@
 #pragma once
-#include "./meta/meta.h"
-#include "graph.h"
+#include "../class_list.h"
+#include "node.h"
 #include <type_traits>
 
 template <template <typename, typename> typename InsertF,

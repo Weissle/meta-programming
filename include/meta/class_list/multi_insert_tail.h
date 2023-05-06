@@ -1,6 +1,6 @@
 #pragma once
-#include "meta/class_list.h"
-#include "meta/insert_tail.h"
+#include "./class_list.h"
+#include "./insert_tail.h"
 
 template <typename To, typename From>
 class ClassListMultiInsertTail;

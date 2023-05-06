@@ -1,13 +1,15 @@
-.PHONY: all test clean
-
 all: build run
-build:
-	g++ --std=c++17 -I. main.cpp -o ./bin/a.out
-run: build
-	./bin/a.out
 
-build_test:
-	g++ --std=c++17 -I. test.cpp -o ./bin/test.out
+mkbin:
+	mkdir -p bin
+
+build: mkbin
+	g++ --std=c++17 -Iinclude src/main.cpp -o ./bin/main.out
+run: build
+	./bin/main.out
+
+build_test: mkbin
+	g++ --std=c++17 -Iinclude test/test.cpp -o ./bin/test.out
 test: build_test
 	./bin/test.out
 
