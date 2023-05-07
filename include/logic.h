@@ -31,23 +31,12 @@ DEFINE_CLASS(LogicF);
 DEFINE_CLASS(LogicG);
 DEFINE_CLASS(LogicH);
 
-/*
-A -> E
-A -> C
-B -> C
-B -> D
-C -> D
-E -> D
-F -> H
-G
-*/
-
-using ANext = ClassList<LogicE, LogicC>;
-using BNext = ClassList<LogicC, LogicD>;
-using CNext = ClassList<LogicD>;
-using DNext = ClassList<>;
-using ENext = ClassList<LogicD>;
-using FNext = ClassList<LogicH>;
+using ANext = ClassList<LogicC, LogicD>;
+using BNext = ClassList<LogicA>;
+using CNext = ClassList<LogicE, LogicF, LogicG>;
+using DNext = ClassList<LogicH>;
+using ENext = ClassList<LogicG>;
+using FNext = ClassList<>;
 using GNext = ClassList<>;
 using HNext = ClassList<>;
 
@@ -61,3 +50,31 @@ using NodeG = Node<LogicG, GNext>;
 using NodeH = Node<LogicH, HNext>;
 using NodeList =
     ClassList<NodeA, NodeB, NodeC, NodeD, NodeE, NodeF, NodeG, NodeH>;
+
+template <typename CL>
+class Run
+{
+public:
+    static void run()
+    {
+        using T = typename CL::THX;
+        T::run();
+        Run<typename CL::RST> r;
+        r.run();
+    }
+    static void run(std::string& s)
+    {
+        using T = typename CL::THX;
+        T::run(s);
+        Run<typename CL::RST> r;
+        r.run(s);
+    }
+};
+
+template <>
+class Run<EmptyClassList>
+{
+public:
+    static void run() {}
+    static void run(std::string& s) {}
+};

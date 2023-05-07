@@ -3,9 +3,12 @@
 
 int main(int argc, char* argv[])
 {
-    DFS<NodeList> dfs;
+    std::cout << "DFS Result:" << std::endl;
+    Run<DFS<NodeList>::FinnalClassSeq> dfs;
     dfs.run();
-    BFS<NodeList> bfs;
+
+    std::cout << "BFS Result:" << std::endl;
+    Run<BFS<NodeList>::FinnalClassSeq> bfs;
     bfs.run();
     return 0;
 }

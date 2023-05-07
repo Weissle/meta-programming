@@ -35,16 +35,6 @@ public:
     using FinnalClassSeq =
         typename Traverser<InsertF, TotalNodeList, NewRestNodeList,
                            typename CurNode::NXT, NewClassSeq>::FinnalClassSeq;
-    void run()
-    {
-        Run<FinnalClassSeq> r;
-        r.run();
-    }
-    void run(std::string& s)
-    {
-        Run<FinnalClassSeq> r;
-        r.run(s);
-    }
 };
 
 template <template <typename, typename> typename InsertF,

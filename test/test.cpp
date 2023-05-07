@@ -75,15 +75,15 @@ int main(int argc, char* argv[])
 
     // test8
     s.clear();
-    BFS<NodeList> bfs;
-    bfs.run(s);
-    assert(s == "LogicA;LogicE;LogicC;LogicD;LogicB;LogicF;LogicH;LogicG;");
+    Run<BFS<NodeList>::FinnalClassSeq> r1;
+    r1.run(s);
+    assert(s == "LogicA;LogicC;LogicD;LogicE;LogicF;LogicG;LogicH;LogicB;");
 
     // test9
     s.clear();
-    DFS<NodeList> dfs;
-    dfs.run(s);
-    assert(s == "LogicA;LogicE;LogicD;LogicC;LogicB;LogicF;LogicH;LogicG;");
+    Run<DFS<NodeList>::FinnalClassSeq> r2;
+    r2.run(s);
+    assert(s == "LogicA;LogicC;LogicE;LogicG;LogicF;LogicD;LogicH;LogicB;");
 
     std::cout << "All tests is passed.\n";
     return 0;

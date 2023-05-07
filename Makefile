@@ -1,10 +1,10 @@
-all: build run
+all: build
 
 mkbin:
 	mkdir -p bin
 
 build: mkbin
-	g++ --std=c++17 -Iinclude src/main.cpp -o ./bin/main.out
+	g++ --std=c++17 -g -Iinclude src/main.cpp -o ./bin/main.out
 run: build
 	./bin/main.out
 
