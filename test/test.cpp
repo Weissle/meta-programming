@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
     // test6
     using CL6_1 = ClassList<LogicA, LogicB, LogicF>;
     using CL6_2 = ClassList<LogicD, LogicF, LogicC>;
-    using CL6 = ClassListMultiInsertTail<CL6_1, CL6_2>::type;
+    using CL6 = ClassListInsertTail<CL6_1, CL6_2>::type;
     s.clear();
     Run<CL6_1>::run(s);
     assert(s == "LogicA;LogicB;LogicF;");
@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
     // test7
     using CL7_1 = ClassList<LogicA, LogicB, LogicF>;
     using CL7_2 = ClassList<LogicD, LogicF, LogicC>;
-    using CL7 = ClassListMultiInsertHead<CL7_1, CL7_2>::type;
+    using CL7 = ClassListInsertHead<CL7_1, CL7_2>::type;
     s.clear();
     Run<CL7_1>::run(s);
     assert(s == "LogicA;LogicB;LogicF;");

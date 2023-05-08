@@ -29,8 +29,9 @@ public:
     using RST = ClassList<NC...>;
 };
 
-template <typename... NC, typename T>
-class ClassList<ClassList<NC...>, T>
-{
-    static_assert(std::is_same_v<T, void>);
-};
+//
+// template <typename... NC, typename T>
+// class ClassList<ClassList<NC...>, T>
+// {
+//     static_assert(std::is_same_v<T, void>);
+// };

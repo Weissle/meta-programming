@@ -63,9 +63,9 @@ public:
 };
 
 template <typename TotalNodeList>
-using BFS = Traverser<ClassListMultiInsertTail, TotalNodeList, TotalNodeList,
+using BFS = Traverser<ClassListInsertTail, TotalNodeList, TotalNodeList,
                       EmptyClassList, EmptyClassList>;
 
 template <typename TotalNodeList>
-using DFS = Traverser<ClassListMultiInsertHead, TotalNodeList, TotalNodeList,
+using DFS = Traverser<ClassListInsertHead, TotalNodeList, TotalNodeList,
                       EmptyClassList, EmptyClassList>;
