@@ -7,15 +7,16 @@
 #define DEFINE_CLASS(CLASS_NAME)                                               \
     class CLASS_NAME                                                           \
     {                                                                          \
-        inline static bool ran = false;                                        \
+        int count = 0;                                                         \
                                                                                \
     public:                                                                    \
         CLASS_NAME() = default;                                                \
-        static void run()                                                      \
+        void run()                                                             \
         {                                                                      \
-            std::cout << #CLASS_NAME << " is running" << std::endl;            \
+            std::cout << #CLASS_NAME << "::run() is called. count:" << ++count \
+                      << std::endl;                                            \
         }                                                                      \
-        static void run(std::string& s)                                        \
+        static void run(std::string& s) /*For debugging and testing */         \
         {                                                                      \
             s += #CLASS_NAME;                                                  \
             s += ";";                                                          \
@@ -54,13 +55,15 @@ using NodeList =
 template <typename CL>
 class Run
 {
+    typename CL::THX cur_logic;
+    Run<typename CL::RST> rst_run;
+
 public:
-    static void run()
+    void run()
     {
-        using T = typename CL::THX;
-        T::run();
+        cur_logic.run();
         Run<typename CL::RST> r;
-        r.run();
+        rst_run.run();
     }
     static void run(std::string& s)
     {
@@ -75,6 +78,6 @@ template <>
 class Run<EmptyClassList>
 {
 public:
-    static void run() {}
+    void run() {}
     static void run(std::string& s) {}
 };
